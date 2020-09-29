@@ -1,0 +1,1246 @@
+---
+title: "Canadians Over the Age of 50 May Be Less Likely to Have a Favourable Opinion of Canada's Federal Green Party"
+author: "Wajahat Naqvi"
+date: "September 27, 2020"
+categories: ["R"]
+tags: ["R Markdown", "plot", "regression"]
+---
+
+
+
+<div id="abstract" class="section level1">
+<h1>Abstract</h1>
+<p>I analyzed and compared two distributions and their summary statistics to find out which age group of Canadian voters is less likely to hold a favourable opinion of the Federal Green Party. My analysis says that Canadians over the age of 50 are less likely to give the party a high rating. This tells the party that it should consider giving special incentives to Canadians over 50 to secure their votes.</p>
+</div>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>Research Question: Which age group of Canadian voters could be less likely to hold a favourable opinion of Canada’s Federal Green Party?</p>
+<p>Political parties should know which categories of voters are likely to hold a favourable opinion of them and which categories of voters are not likely to. This is important because political parties should know which categories of voters they should provide special incentives to in order to secure their votes.
+I am particularly interested in finding out which categories of voters are less likely to hold a favourable opinion of the Federal Green Party in Canada. The party’s mission is to build a more prosperous and sustainable future for all Canadians. This mission will appeal to certain categories of Canadian voters but will not appeal easily to other categories. The purpose of this analysis is to identify the age group to which voters who are unlikely to hold a favourable opinion of the Federal Green Party belong.
+In order to identify that age group, I created a new dataset. This dataset is a subset of the original dataset (that is, the dataset that corresponds to the survey code: “ces2019_phone”). This new dataset has two columns. The first column contains the ages of the respondents of a survey conducted in 2019 (the survey that has the survey code “ces2019_phone”) and the second column contains the respondents’ answers to the question “How do you feel about the FEDERAL Green Party?”. I used this dataset to create two histograms. The first histogram shows the distribution of the ages of respondents who had an unfavourable opinion of the Federal Green Party. The second histogram shows the distribution of the ages of respondents who had a favourable opinion of the Federal Green Party (that is, gave it a rating above 55, or, in other words, a high rating).
+The datasets I have chosen to analyze allow me to make insightful histograms that help me answer my research question.
+To identify the respondents’ age groups that were less likely to hold a favourable opinion of the Federal Green Party, I analysed the shape of each distribution and compared the relevant key figures, for instance, I compared the median age of the respondents who said they did not hold a favourable opinion of the Federal Green Party to the median age of the respondents who said thay they hold a favourable opinion of the Federal Green Party.
+My analysis and comparisons revealed that it is possible that Canadian voters over 50 years of age are less likely to hold a favourable opinion of the Federal Green Party.
+This is an important finding. Through this finding, the Federal Green Party knows that there is a chance that people over the age of 50 are less likely to hold a favourable opinion of it and that it should focus on providing special incentives to them in order to secure their votes.</p>
+<pre class="r"><code>install.packages(&quot;devtools&quot;)
+library(devtools)
+devtools::install_github(&quot;hodgettsp/cesR&quot;)
+cesR::get_ces(&quot;ces2019_phone&quot;)</code></pre>
+<pre><code>## TO CITE THIS SURVEY FILE:
+## 
+## - Stephenson, Laura B; Harell, Allison; Rubenson, Daniel; Loewen, Peter John, 2020, &#39;2019 Canadian Election Study - Phone Survey&#39;, https://doi.org/10.7910/DVN/8RHLG1, Harvard Dataverse, V1, UNF:6:eyR28qaoYlHj9qwPWZmmVQ== [fileUNF]
+## 
+## - Stephenson, Laura, Allison Harrel, Daniel Rubenson and Peter Loewen. Forthcoming. &#39;Measuring Preferences and Behaviour in the 2019 Canadian Election Study,&#39; Canadian Journal of Political Science.
+## 
+## LINK: https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/8RHLG1</code></pre>
+</div>
+<div id="about-the-dataset" class="section level1">
+<h1>About the Dataset:</h1>
+<p>The dataset I analyze is survey data that was part of the 2019 Canadian Election Study. The Canadian Election Study is a large-scale survey of citizens conducted each election year. The dataset corresponds to the survey code “ces2019_phone” and has 4,021 rows and 278 columns. Every row corresponds to a unique respondent and has information on a variety of matters. Every row also has information on a respondent’s opinions of the various political parties in Canada. My research question is relevant given this dataset because to answer it, I have to analyze a couple of distributions obtained through the dataset.
+The two columns in the original dataset of interest to me are “q18” and “age”. The former has information on every respondent’s opinion of the Federal Green Party (that is, every respondent’s answer to the question “How do you feel about the Federal Green Party?”). The opinion was recorded in the form of a number from 0 to 100. The latter has information on every respondent’s age.
+About the column titled “age”:
+Minimum value: 18 years (The minimum value in a set of values is the lowest value in the set of values)
+1st quartile: 38 years (The first quartile of a set of values is the value below which 25% of the values in the set of values lie)
+Median: 51 years (The median of a set of values is the middle value in the set of values)
+Mean: 50.89 years (The mean of a set of values is the average of all the values in the set)
+3rd quartile: 64 years (The third quartile of a set of values is value above which 25% of the values in the set of values lie)
+Maximum value: 100 years (The maximum value in a set of values is the highest value in the set of values)
+About the column titled “q18”:
+Minimum value: -9 (if a respondent said that they did not know how they felt about the Federal Green Party, -9 was recorded as their opinion of the federal party)
+1st quartile: 10
+Median: 45
+Mean: 40.21
+3rd quartile: 60
+Maximum value: 100
+The response of every respondent who stated their opinion of the Federal Green Party was recorded in the form of a number between 0 and 100. The higher the number, the higher the opinion and the better they felt about the Federal Green Party. The opinion can be thought of as a rating. In this analysis, a rating above 55 is considered to be a high rating and a rating below 55 is considered to be a low rating. A high rating is assumed to convey that the respondent is likely to have a favourable opinion of the Federal Green Party and a low rating is assumed to convey that the respondent is likely to not have a favourable opinion of the Federal Green Party.</p>
+<pre class="r"><code>head(ces2019_phone)</code></pre>
+<pre><code>## # A tibble: 6 x 278
+##   sample_id survey_end_CES survey_end_mont… survey_end_day_… num_attempts_CES
+##       &lt;dbl&gt; &lt;chr&gt;                     &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;
+## 1        18 2019-09-23 15…                9               23                5
+## 2        32 2019-09-12 18…                9               12                1
+## 3        39 2019-09-10 18…                9               10                1
+## 4        59 2019-10-10 15…               10               10                6
+## 5        61 2019-09-12 16…                9               12                1
+## 6        69 2019-09-17 17…                9               17                1
+## # … with 273 more variables: interviewer_id_CES &lt;dbl&gt;,
+## #   interviewer_gender_CES &lt;chr&gt;, language_CES &lt;dbl+lbl&gt;,
+## #   phonetype_CES &lt;dbl+lbl&gt;, survey_end_PES &lt;chr&gt;,
+## #   survey_end_month_PES &lt;dbl+lbl&gt;, survey_end_day_PES &lt;dbl+lbl&gt;,
+## #   num_attempts_PES &lt;dbl+lbl&gt;, interviewer_id_PES &lt;dbl+lbl&gt;,
+## #   interviewer_gender_PES &lt;chr&gt;, language_PES &lt;dbl+lbl&gt;,
+## #   phonetype_PES &lt;dbl+lbl&gt;, mode_PES &lt;dbl+lbl&gt;, phone_type &lt;dbl+lbl&gt;,
+## #   weight_CES &lt;dbl&gt;, weight_PES &lt;dbl+lbl&gt;, c1 &lt;dbl+lbl&gt;, c2a &lt;dbl+lbl&gt;,
+## #   c3 &lt;dbl+lbl&gt;, q1 &lt;dbl+lbl&gt;, q2 &lt;dbl+lbl&gt;, q3 &lt;dbl+lbl&gt;, q4 &lt;dbl+lbl&gt;,
+## #   q6 &lt;dbl+lbl&gt;, q7 &lt;chr&gt;, q72 &lt;chr&gt;, q73 &lt;chr&gt;, q74 &lt;chr&gt;, q8 &lt;dbl+lbl&gt;,
+## #   q8_70 &lt;chr&gt;, q9 &lt;dbl+lbl&gt;, q10 &lt;dbl+lbl&gt;, q11 &lt;dbl+lbl&gt;, q11_70 &lt;chr&gt;,
+## #   q12 &lt;dbl+lbl&gt;, q12_70 &lt;chr&gt;, q13 &lt;dbl+lbl&gt;, q14 &lt;dbl+lbl&gt;, q15 &lt;dbl+lbl&gt;,
+## #   q16 &lt;dbl+lbl&gt;, q17 &lt;dbl+lbl&gt;, q18 &lt;dbl+lbl&gt;, q19 &lt;dbl+lbl&gt;, q20 &lt;dbl+lbl&gt;,
+## #   q21 &lt;dbl+lbl&gt;, q22 &lt;dbl+lbl&gt;, q23 &lt;dbl+lbl&gt;, q24 &lt;dbl+lbl&gt;, q25 &lt;dbl+lbl&gt;,
+## #   q27_a &lt;dbl+lbl&gt;, q27_b &lt;dbl+lbl&gt;, q27_c &lt;dbl+lbl&gt;, q27_d &lt;dbl+lbl&gt;,
+## #   q27_e &lt;dbl+lbl&gt;, q31 &lt;dbl+lbl&gt;, q32 &lt;dbl+lbl&gt;, q33 &lt;dbl+lbl&gt;, q33_70 &lt;chr&gt;,
+## #   q34 &lt;dbl+lbl&gt;, q34_70 &lt;chr&gt;, q35 &lt;dbl+lbl&gt;, q35_70 &lt;chr&gt;, q36 &lt;dbl+lbl&gt;,
+## #   q36_70 &lt;chr&gt;, q37 &lt;dbl+lbl&gt;, q37_70 &lt;chr&gt;, q38 &lt;dbl+lbl&gt;, q38_70 &lt;chr&gt;,
+## #   q39 &lt;dbl+lbl&gt;, q40 &lt;dbl+lbl&gt;, q75 &lt;dbl+lbl&gt;, q44 &lt;dbl+lbl&gt;, q76 &lt;dbl+lbl&gt;,
+## #   q45 &lt;dbl+lbl&gt;, q46 &lt;dbl+lbl&gt;, q47 &lt;dbl+lbl&gt;, q48 &lt;dbl+lbl&gt;, q49 &lt;dbl+lbl&gt;,
+## #   q52 &lt;dbl+lbl&gt;, q52_70 &lt;chr&gt;, q53 &lt;dbl+lbl&gt;, q54 &lt;dbl+lbl&gt;, q59 &lt;dbl+lbl&gt;,
+## #   q60 &lt;dbl+lbl&gt;, q60_70 &lt;chr&gt;, q77 &lt;dbl+lbl&gt;, q43 &lt;dbl+lbl&gt;, q61 &lt;dbl+lbl&gt;,
+## #   q62 &lt;dbl+lbl&gt;, q62_220 &lt;chr&gt;, q63 &lt;dbl+lbl&gt;, q64 &lt;dbl+lbl&gt;, q64_130 &lt;chr&gt;,
+## #   q65 &lt;dbl+lbl&gt;, q66a_1 &lt;dbl+lbl&gt;, q66a_2 &lt;dbl+lbl&gt;, q66a_3 &lt;dbl+lbl&gt;,
+## #   q66a_4 &lt;dbl+lbl&gt;, q66a_5 &lt;dbl+lbl&gt;, q66a_6 &lt;dbl+lbl&gt;, …</code></pre>
+<pre class="r"><code>ces2019_phone &lt;- 
+  ces2019_phone %&gt;% 
+  select(age, q18)
+
+ces2019_phone &lt;-
+  ces2019_phone %&gt;%
+  filter(q18&gt;-5)</code></pre>
+</div>
+<div id="important-information-to-note-before-reading-the-analysis-below" class="section level1">
+<h1>Important Information To Note Before Reading the Analysis Below:</h1>
+<p>The histograms below are based on dataset A. Dataset A consists of a subset of the data in the dataset ces2019_phone (survey code: “ces2019_phone”). It has two columns and 574 rows. The two columns in this dataset are “q18” and “age”. Column “q18” contains respondents’ answers to question “How do you feel about the FEDERAL Green Party?”. Every opinion was recorded in the form of a number between 0 and 100. Presumably, the higher the number a respondent gives, the more they like the Federal Green Party. Hence, every number can be thought as a rating. Only stated opinions of the Federal Green Party are part of Dataset A. Column “age” tells us the respondents’ ages when the survey (survey code: “ces2019_phone”) was taken. Each row in dataset A corresponds to a particular respondent of the survey (survey code: “ces2019_phone”). Dataset A does not contain the opinions of respondents aged over 34 years when the survey (survey code: “ces2019_phone”) was taken The histograms below are based on dataset A. Dataset A consists of a subset of the data in the dataset ces2019_phone (survey code: “ces2019_phone”). It has two columns and 574 rows. The two columns in this dataset are “q18” and “age”. Column “q18” contains respondents’ answers to question “How do you feel about the FEDERAL Green Party?”. Every opinion was recorded in the form of a number between 0 and 100. Presumably, the higher the number a respondent gives, the more they like the Federal Green Party. Hence, every number can be thought as a rating. Only stated opinions of the Federal Green Party are part of Dataset A. Column “age” tells us the respondents’ ages when the survey (survey code: “ces2019_phone”) was taken. Each row in dataset A corresponds to a particular respondent of the survey (survey code: “ces2019_phone”). Dataset A does not contain the opinions of respondents aged over 34 years when the survey (survey code: “ces2019_phone”) was taken but it does have data of respondents who were aged below 34 years when the survey (survey code: “ces2019_phone”) was taken.</p>
+<pre class="r"><code>cesR::get_ces(&quot;ces2019_phone&quot;)</code></pre>
+<pre><code>## TO CITE THIS SURVEY FILE:
+## 
+## - Stephenson, Laura B; Harell, Allison; Rubenson, Daniel; Loewen, Peter John, 2020, &#39;2019 Canadian Election Study - Phone Survey&#39;, https://doi.org/10.7910/DVN/8RHLG1, Harvard Dataverse, V1, UNF:6:eyR28qaoYlHj9qwPWZmmVQ== [fileUNF]
+## 
+## - Stephenson, Laura, Allison Harrel, Daniel Rubenson and Peter Loewen. Forthcoming. &#39;Measuring Preferences and Behaviour in the 2019 Canadian Election Study,&#39; Canadian Journal of Political Science.
+## 
+## LINK: https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/8RHLG1</code></pre>
+<pre class="r"><code>ces2019_phone &lt;-
+  ces2019_phone %&gt;%
+  filter(q18&lt;55)
+
+summary(ces2019_phone$age)</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   18.00   40.00   53.00   52.46   65.00   95.00</code></pre>
+<pre class="r"><code>years = ces2019_phone$age
+
+sd(years)</code></pre>
+<pre><code>## [1] 16.30468</code></pre>
+<pre class="r"><code>ces2019_phone %&gt;%
+  ggplot(aes(x = age)) +
+  geom_histogram(bins = 10) +
+  labs(x = &quot;Ages of Respondents&quot;,
+       y = &quot;Number of Respondents Who Gave a Low Rating &quot;,
+       title = &quot;Histogram 1&quot;,
+       caption = &quot;Stephenson, Laura B; Harell, Allison; Rubenson, Daniel; 
+       Loewen, Peter John, 2020, &#39;2019 Canadian Election Study - Phone Survey&#39;&quot;)</code></pre>
+<p><img src="/post/2015-07-23-r-rmarkdown_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<pre class="r"><code>theme_bw()</code></pre>
+<pre><code>## List of 93
+##  $ line                      :List of 6
+##   ..$ colour       : chr &quot;black&quot;
+##   ..$ size         : num 0.5
+##   ..$ linetype     : num 1
+##   ..$ lineend      : chr &quot;butt&quot;
+##   ..$ arrow        : logi FALSE
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_line&quot; &quot;element&quot;
+##  $ rect                      :List of 5
+##   ..$ fill         : chr &quot;white&quot;
+##   ..$ colour       : chr &quot;black&quot;
+##   ..$ size         : num 0.5
+##   ..$ linetype     : num 1
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_rect&quot; &quot;element&quot;
+##  $ text                      :List of 11
+##   ..$ family       : chr &quot;&quot;
+##   ..$ face         : chr &quot;plain&quot;
+##   ..$ colour       : chr &quot;black&quot;
+##   ..$ size         : num 11
+##   ..$ hjust        : num 0.5
+##   ..$ vjust        : num 0.5
+##   ..$ angle        : num 0
+##   ..$ lineheight   : num 0.9
+##   ..$ margin       : &#39;margin&#39; num [1:4] 0points 0points 0points 0points
+##   .. ..- attr(*, &quot;unit&quot;)= int 8
+##   ..$ debug        : logi FALSE
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
+##  $ title                     : NULL
+##  $ aspect.ratio              : NULL
+##  $ axis.title                : NULL
+##  $ axis.title.x              :List of 11
+##   ..$ family       : NULL
+##   ..$ face         : NULL
+##   ..$ colour       : NULL
+##   ..$ size         : NULL
+##   ..$ hjust        : NULL
+##   ..$ vjust        : num 1
+##   ..$ angle        : NULL
+##   ..$ lineheight   : NULL
+##   ..$ margin       : &#39;margin&#39; num [1:4] 2.75points 0points 0points 0points
+##   .. ..- attr(*, &quot;unit&quot;)= int 8
+##   ..$ debug        : NULL
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
+##  $ axis.title.x.top          :List of 11
+##   ..$ family       : NULL
+##   ..$ face         : NULL
+##   ..$ colour       : NULL
+##   ..$ size         : NULL
+##   ..$ hjust        : NULL
+##   ..$ vjust        : num 0
+##   ..$ angle        : NULL
+##   ..$ lineheight   : NULL
+##   ..$ margin       : &#39;margin&#39; num [1:4] 0points 0points 2.75points 0points
+##   .. ..- attr(*, &quot;unit&quot;)= int 8
+##   ..$ debug        : NULL
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
+##  $ axis.title.x.bottom       : NULL
+##  $ axis.title.y              :List of 11
+##   ..$ family       : NULL
+##   ..$ face         : NULL
+##   ..$ colour       : NULL
+##   ..$ size         : NULL
+##   ..$ hjust        : NULL
+##   ..$ vjust        : num 1
+##   ..$ angle        : num 90
+##   ..$ lineheight   : NULL
+##   ..$ margin       : &#39;margin&#39; num [1:4] 0points 2.75points 0points 0points
+##   .. ..- attr(*, &quot;unit&quot;)= int 8
+##   ..$ debug        : NULL
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
+##  $ axis.title.y.left         : NULL
+##  $ axis.title.y.right        :List of 11
+##   ..$ family       : NULL
+##   ..$ face         : NULL
+##   ..$ colour       : NULL
+##   ..$ size         : NULL
+##   ..$ hjust        : NULL
+##   ..$ vjust        : num 0
+##   ..$ angle        : num -90
+##   ..$ lineheight   : NULL
+##   ..$ margin       : &#39;margin&#39; num [1:4] 0points 0points 0points 2.75points
+##   .. ..- attr(*, &quot;unit&quot;)= int 8
+##   ..$ debug        : NULL
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
+##  $ axis.text                 :List of 11
+##   ..$ family       : NULL
+##   ..$ face         : NULL
+##   ..$ colour       : chr &quot;grey30&quot;
+##   ..$ size         : &#39;rel&#39; num 0.8
+##   ..$ hjust        : NULL
+##   ..$ vjust        : NULL
+##   ..$ angle        : NULL
+##   ..$ lineheight   : NULL
+##   ..$ margin       : NULL
+##   ..$ debug        : NULL
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
+##  $ axis.text.x               :List of 11
+##   ..$ family       : NULL
+##   ..$ face         : NULL
+##   ..$ colour       : NULL
+##   ..$ size         : NULL
+##   ..$ hjust        : NULL
+##   ..$ vjust        : num 1
+##   ..$ angle        : NULL
+##   ..$ lineheight   : NULL
+##   ..$ margin       : &#39;margin&#39; num [1:4] 2.2points 0points 0points 0points
+##   .. ..- attr(*, &quot;unit&quot;)= int 8
+##   ..$ debug        : NULL
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
+##  $ axis.text.x.top           :List of 11
+##   ..$ family       : NULL
+##   ..$ face         : NULL
+##   ..$ colour       : NULL
+##   ..$ size         : NULL
+##   ..$ hjust        : NULL
+##   ..$ vjust        : num 0
+##   ..$ angle        : NULL
+##   ..$ lineheight   : NULL
+##   ..$ margin       : &#39;margin&#39; num [1:4] 0points 0points 2.2points 0points
+##   .. ..- attr(*, &quot;unit&quot;)= int 8
+##   ..$ debug        : NULL
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
+##  $ axis.text.x.bottom        : NULL
+##  $ axis.text.y               :List of 11
+##   ..$ family       : NULL
+##   ..$ face         : NULL
+##   ..$ colour       : NULL
+##   ..$ size         : NULL
+##   ..$ hjust        : num 1
+##   ..$ vjust        : NULL
+##   ..$ angle        : NULL
+##   ..$ lineheight   : NULL
+##   ..$ margin       : &#39;margin&#39; num [1:4] 0points 2.2points 0points 0points
+##   .. ..- attr(*, &quot;unit&quot;)= int 8
+##   ..$ debug        : NULL
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
+##  $ axis.text.y.left          : NULL
+##  $ axis.text.y.right         :List of 11
+##   ..$ family       : NULL
+##   ..$ face         : NULL
+##   ..$ colour       : NULL
+##   ..$ size         : NULL
+##   ..$ hjust        : num 0
+##   ..$ vjust        : NULL
+##   ..$ angle        : NULL
+##   ..$ lineheight   : NULL
+##   ..$ margin       : &#39;margin&#39; num [1:4] 0points 0points 0points 2.2points
+##   .. ..- attr(*, &quot;unit&quot;)= int 8
+##   ..$ debug        : NULL
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
+##  $ axis.ticks                :List of 6
+##   ..$ colour       : chr &quot;grey20&quot;
+##   ..$ size         : NULL
+##   ..$ linetype     : NULL
+##   ..$ lineend      : NULL
+##   ..$ arrow        : logi FALSE
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_line&quot; &quot;element&quot;
+##  $ axis.ticks.x              : NULL
+##  $ axis.ticks.x.top          : NULL
+##  $ axis.ticks.x.bottom       : NULL
+##  $ axis.ticks.y              : NULL
+##  $ axis.ticks.y.left         : NULL
+##  $ axis.ticks.y.right        : NULL
+##  $ axis.ticks.length         : &#39;simpleUnit&#39; num 2.75points
+##   ..- attr(*, &quot;unit&quot;)= int 8
+##  $ axis.ticks.length.x       : NULL
+##  $ axis.ticks.length.x.top   : NULL
+##  $ axis.ticks.length.x.bottom: NULL
+##  $ axis.ticks.length.y       : NULL
+##  $ axis.ticks.length.y.left  : NULL
+##  $ axis.ticks.length.y.right : NULL
+##  $ axis.line                 : list()
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_blank&quot; &quot;element&quot;
+##  $ axis.line.x               : NULL
+##  $ axis.line.x.top           : NULL
+##  $ axis.line.x.bottom        : NULL
+##  $ axis.line.y               : NULL
+##  $ axis.line.y.left          : NULL
+##  $ axis.line.y.right         : NULL
+##  $ legend.background         :List of 5
+##   ..$ fill         : NULL
+##   ..$ colour       : logi NA
+##   ..$ size         : NULL
+##   ..$ linetype     : NULL
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_rect&quot; &quot;element&quot;
+##  $ legend.margin             : &#39;margin&#39; num [1:4] 5.5points 5.5points 5.5points 5.5points
+##   ..- attr(*, &quot;unit&quot;)= int 8
+##  $ legend.spacing            : &#39;simpleUnit&#39; num 11points
+##   ..- attr(*, &quot;unit&quot;)= int 8
+##  $ legend.spacing.x          : NULL
+##  $ legend.spacing.y          : NULL
+##  $ legend.key                :List of 5
+##   ..$ fill         : chr &quot;white&quot;
+##   ..$ colour       : logi NA
+##   ..$ size         : NULL
+##   ..$ linetype     : NULL
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_rect&quot; &quot;element&quot;
+##  $ legend.key.size           : &#39;simpleUnit&#39; num 1.2lines
+##   ..- attr(*, &quot;unit&quot;)= int 3
+##  $ legend.key.height         : NULL
+##  $ legend.key.width          : NULL
+##  $ legend.text               :List of 11
+##   ..$ family       : NULL
+##   ..$ face         : NULL
+##   ..$ colour       : NULL
+##   ..$ size         : &#39;rel&#39; num 0.8
+##   ..$ hjust        : NULL
+##   ..$ vjust        : NULL
+##   ..$ angle        : NULL
+##   ..$ lineheight   : NULL
+##   ..$ margin       : NULL
+##   ..$ debug        : NULL
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
+##  $ legend.text.align         : NULL
+##  $ legend.title              :List of 11
+##   ..$ family       : NULL
+##   ..$ face         : NULL
+##   ..$ colour       : NULL
+##   ..$ size         : NULL
+##   ..$ hjust        : num 0
+##   ..$ vjust        : NULL
+##   ..$ angle        : NULL
+##   ..$ lineheight   : NULL
+##   ..$ margin       : NULL
+##   ..$ debug        : NULL
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
+##  $ legend.title.align        : NULL
+##  $ legend.position           : chr &quot;right&quot;
+##  $ legend.direction          : NULL
+##  $ legend.justification      : chr &quot;center&quot;
+##  $ legend.box                : NULL
+##  $ legend.box.just           : NULL
+##  $ legend.box.margin         : &#39;margin&#39; num [1:4] 0cm 0cm 0cm 0cm
+##   ..- attr(*, &quot;unit&quot;)= int 1
+##  $ legend.box.background     : list()
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_blank&quot; &quot;element&quot;
+##  $ legend.box.spacing        : &#39;simpleUnit&#39; num 11points
+##   ..- attr(*, &quot;unit&quot;)= int 8
+##  $ panel.background          :List of 5
+##   ..$ fill         : chr &quot;white&quot;
+##   ..$ colour       : logi NA
+##   ..$ size         : NULL
+##   ..$ linetype     : NULL
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_rect&quot; &quot;element&quot;
+##  $ panel.border              :List of 5
+##   ..$ fill         : logi NA
+##   ..$ colour       : chr &quot;grey20&quot;
+##   ..$ size         : NULL
+##   ..$ linetype     : NULL
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_rect&quot; &quot;element&quot;
+##  $ panel.spacing             : &#39;simpleUnit&#39; num 5.5points
+##   ..- attr(*, &quot;unit&quot;)= int 8
+##  $ panel.spacing.x           : NULL
+##  $ panel.spacing.y           : NULL
+##  $ panel.grid                :List of 6
+##   ..$ colour       : chr &quot;grey92&quot;
+##   ..$ size         : NULL
+##   ..$ linetype     : NULL
+##   ..$ lineend      : NULL
+##   ..$ arrow        : logi FALSE
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_line&quot; &quot;element&quot;
+##  $ panel.grid.major          : NULL
+##  $ panel.grid.minor          :List of 6
+##   ..$ colour       : NULL
+##   ..$ size         : &#39;rel&#39; num 0.5
+##   ..$ linetype     : NULL
+##   ..$ lineend      : NULL
+##   ..$ arrow        : logi FALSE
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_line&quot; &quot;element&quot;
+##  $ panel.grid.major.x        : NULL
+##  $ panel.grid.major.y        : NULL
+##  $ panel.grid.minor.x        : NULL
+##  $ panel.grid.minor.y        : NULL
+##  $ panel.ontop               : logi FALSE
+##  $ plot.background           :List of 5
+##   ..$ fill         : NULL
+##   ..$ colour       : chr &quot;white&quot;
+##   ..$ size         : NULL
+##   ..$ linetype     : NULL
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_rect&quot; &quot;element&quot;
+##  $ plot.title                :List of 11
+##   ..$ family       : NULL
+##   ..$ face         : NULL
+##   ..$ colour       : NULL
+##   ..$ size         : &#39;rel&#39; num 1.2
+##   ..$ hjust        : num 0
+##   ..$ vjust        : num 1
+##   ..$ angle        : NULL
+##   ..$ lineheight   : NULL
+##   ..$ margin       : &#39;margin&#39; num [1:4] 0points 0points 5.5points 0points
+##   .. ..- attr(*, &quot;unit&quot;)= int 8
+##   ..$ debug        : NULL
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
+##  $ plot.title.position       : chr &quot;panel&quot;
+##  $ plot.subtitle             :List of 11
+##   ..$ family       : NULL
+##   ..$ face         : NULL
+##   ..$ colour       : NULL
+##   ..$ size         : NULL
+##   ..$ hjust        : num 0
+##   ..$ vjust        : num 1
+##   ..$ angle        : NULL
+##   ..$ lineheight   : NULL
+##   ..$ margin       : &#39;margin&#39; num [1:4] 0points 0points 5.5points 0points
+##   .. ..- attr(*, &quot;unit&quot;)= int 8
+##   ..$ debug        : NULL
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
+##  $ plot.caption              :List of 11
+##   ..$ family       : NULL
+##   ..$ face         : NULL
+##   ..$ colour       : NULL
+##   ..$ size         : &#39;rel&#39; num 0.8
+##   ..$ hjust        : num 1
+##   ..$ vjust        : num 1
+##   ..$ angle        : NULL
+##   ..$ lineheight   : NULL
+##   ..$ margin       : &#39;margin&#39; num [1:4] 5.5points 0points 0points 0points
+##   .. ..- attr(*, &quot;unit&quot;)= int 8
+##   ..$ debug        : NULL
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
+##  $ plot.caption.position     : chr &quot;panel&quot;
+##  $ plot.tag                  :List of 11
+##   ..$ family       : NULL
+##   ..$ face         : NULL
+##   ..$ colour       : NULL
+##   ..$ size         : &#39;rel&#39; num 1.2
+##   ..$ hjust        : num 0.5
+##   ..$ vjust        : num 0.5
+##   ..$ angle        : NULL
+##   ..$ lineheight   : NULL
+##   ..$ margin       : NULL
+##   ..$ debug        : NULL
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
+##  $ plot.tag.position         : chr &quot;topleft&quot;
+##  $ plot.margin               : &#39;margin&#39; num [1:4] 5.5points 5.5points 5.5points 5.5points
+##   ..- attr(*, &quot;unit&quot;)= int 8
+##  $ strip.background          :List of 5
+##   ..$ fill         : chr &quot;grey85&quot;
+##   ..$ colour       : chr &quot;grey20&quot;
+##   ..$ size         : NULL
+##   ..$ linetype     : NULL
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_rect&quot; &quot;element&quot;
+##  $ strip.background.x        : NULL
+##  $ strip.background.y        : NULL
+##  $ strip.placement           : chr &quot;inside&quot;
+##  $ strip.text                :List of 11
+##   ..$ family       : NULL
+##   ..$ face         : NULL
+##   ..$ colour       : chr &quot;grey10&quot;
+##   ..$ size         : &#39;rel&#39; num 0.8
+##   ..$ hjust        : NULL
+##   ..$ vjust        : NULL
+##   ..$ angle        : NULL
+##   ..$ lineheight   : NULL
+##   ..$ margin       : &#39;margin&#39; num [1:4] 4.4points 4.4points 4.4points 4.4points
+##   .. ..- attr(*, &quot;unit&quot;)= int 8
+##   ..$ debug        : NULL
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
+##  $ strip.text.x              : NULL
+##  $ strip.text.y              :List of 11
+##   ..$ family       : NULL
+##   ..$ face         : NULL
+##   ..$ colour       : NULL
+##   ..$ size         : NULL
+##   ..$ hjust        : NULL
+##   ..$ vjust        : NULL
+##   ..$ angle        : num -90
+##   ..$ lineheight   : NULL
+##   ..$ margin       : NULL
+##   ..$ debug        : NULL
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
+##  $ strip.switch.pad.grid     : &#39;simpleUnit&#39; num 2.75points
+##   ..- attr(*, &quot;unit&quot;)= int 8
+##  $ strip.switch.pad.wrap     : &#39;simpleUnit&#39; num 2.75points
+##   ..- attr(*, &quot;unit&quot;)= int 8
+##  $ strip.text.y.left         :List of 11
+##   ..$ family       : NULL
+##   ..$ face         : NULL
+##   ..$ colour       : NULL
+##   ..$ size         : NULL
+##   ..$ hjust        : NULL
+##   ..$ vjust        : NULL
+##   ..$ angle        : num 90
+##   ..$ lineheight   : NULL
+##   ..$ margin       : NULL
+##   ..$ debug        : NULL
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
+##  - attr(*, &quot;class&quot;)= chr [1:2] &quot;theme&quot; &quot;gg&quot;
+##  - attr(*, &quot;complete&quot;)= logi TRUE
+##  - attr(*, &quot;validate&quot;)= logi TRUE</code></pre>
+</div>
+<div id="discussion-of-histogram-1-and-related-findings" class="section level1">
+<h1>Discussion of Histogram 1 and Related Findings:</h1>
+<p>Histogram 1 shows us the distribution of the ages of the respondents who gave a low rating to the Federal Green Party (a low rating is a rating below 55 and is not indicative of a favourable opinion). A histogram is a graph that shows us the distribution of a variable and the frequency of various subgroups of values in the data. The y-axis in histogram 2 tells us, for every age group, how many respondents gave the party a low rating.
+The distribution is roughly bell-shaped. The mean age of respondents who gave the Federal Green Party is roughly 52 years. The median age of these respondents is 53 years. The distribution’s IQR (interquartile range) is 47 years. The interquartile range of a set of values is the difference between the third quartile and the first quartile of the set of values. A higher IQR, all else equal, indicates more variation in the values. The standard deviation of the ages of the respondents who gave the Federal Green Party a rating below 55 was 16.31 years. The standard deviation of a set of values is a measure of the variation among the values.
+Since the distribution is roughly bell-shaped, the empirical rule can be applied to it to draw further insights related to the respondents’ opinions of the Federal Green Party. The empirical rule tells us how the values in a normal distribution are distributed. For instance, it tells us that about 68% of the values fall within 1 standard deviation of the mean, about 95% of the values fall within 2 standard deviations of the mean and about 99.7% of the values fall within 3 standard deviations of the mean. In this case, the empirical rule is telling us that approximately 68% of the respondents who gave a rating below 55 to the Federal Green Party were between approximately 36 and 68 years of age. That is, middle-aged respondents were reasonably likely to have given the Federal Green Party a rating below 55. The empirical rule is also telling us that approximately 2.5% of the respondents who gave a rating below 55 to Since the distribution is roughly bell-shaped, the empirical rule can be applied to it to draw further insights related to the respondents’ opinions of the Federal Green Party. The empirical rule tells us how the values in a normal distribution are distributed. For instance, it tells us that about 68% of the values fall within 1 standard deviation of the mean, about 95% of the values fall within 2 standard deviations of the mean and about 99.7% of the values fall within 3 standard deviations of the mean. In this case, the empirical rule is telling us that approximately 68% of the respondents who gave a rating below 55 to the Federal Green Party were between approximately 36 and 68 years of age. That is, middle-aged respondents were reasonably likely to have given the Federal Green Party a rating below 55. The empirical rule is also telling us that approximately 2.5% of the respondents who gave a rating below 55 to the Federal Green Party were either 18 or 19 years of age. This conveys that respondents in the sample who were either 18 or 19 years of age were highly unlikely to give a rating below 55 to the Federal Green Party. This tells me that younger respondents are probably likely to have a more favourable view of the Federal Green Party. The shape of this distribution also conveys that respondents below about 50 years of age were not more likely to give a low rating to the Federal Green Party.</p>
+<pre class="r"><code>cesR::get_ces(&quot;ces2019_phone&quot;)</code></pre>
+<pre><code>## TO CITE THIS SURVEY FILE:
+## 
+## - Stephenson, Laura B; Harell, Allison; Rubenson, Daniel; Loewen, Peter John, 2020, &#39;2019 Canadian Election Study - Phone Survey&#39;, https://doi.org/10.7910/DVN/8RHLG1, Harvard Dataverse, V1, UNF:6:eyR28qaoYlHj9qwPWZmmVQ== [fileUNF]
+## 
+## - Stephenson, Laura, Allison Harrel, Daniel Rubenson and Peter Loewen. Forthcoming. &#39;Measuring Preferences and Behaviour in the 2019 Canadian Election Study,&#39; Canadian Journal of Political Science.
+## 
+## LINK: https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/8RHLG1</code></pre>
+<pre class="r"><code>ces2019_phone &lt;-
+  ces2019_phone %&gt;%
+  filter(q18&gt;55)
+
+summary(ces2019_phone$age)</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   18.00   33.00   47.00   47.92   62.00  100.00</code></pre>
+<pre class="r"><code>ces2019_phone %&gt;%
+  ggplot(aes(x = age)) +
+  geom_histogram(bins = 11) +
+  labs(x = &quot;Ages of Respondents&quot;,
+       y = &quot;Number of Respondents Who Gave a High Rating &quot;,
+       title = &quot;Histogram 2&quot;,
+       caption = &quot;Stephenson, Laura B; Harell, Allison; Rubenson, Daniel;
+       Loewen, Peter John, 2020, &#39;2019 Canadian Election Study - Phone Survey&#39;&quot;)</code></pre>
+<p><img src="/post/2015-07-23-r-rmarkdown_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<pre class="r"><code>theme_bw()</code></pre>
+<pre><code>## List of 93
+##  $ line                      :List of 6
+##   ..$ colour       : chr &quot;black&quot;
+##   ..$ size         : num 0.5
+##   ..$ linetype     : num 1
+##   ..$ lineend      : chr &quot;butt&quot;
+##   ..$ arrow        : logi FALSE
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_line&quot; &quot;element&quot;
+##  $ rect                      :List of 5
+##   ..$ fill         : chr &quot;white&quot;
+##   ..$ colour       : chr &quot;black&quot;
+##   ..$ size         : num 0.5
+##   ..$ linetype     : num 1
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_rect&quot; &quot;element&quot;
+##  $ text                      :List of 11
+##   ..$ family       : chr &quot;&quot;
+##   ..$ face         : chr &quot;plain&quot;
+##   ..$ colour       : chr &quot;black&quot;
+##   ..$ size         : num 11
+##   ..$ hjust        : num 0.5
+##   ..$ vjust        : num 0.5
+##   ..$ angle        : num 0
+##   ..$ lineheight   : num 0.9
+##   ..$ margin       : &#39;margin&#39; num [1:4] 0points 0points 0points 0points
+##   .. ..- attr(*, &quot;unit&quot;)= int 8
+##   ..$ debug        : logi FALSE
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
+##  $ title                     : NULL
+##  $ aspect.ratio              : NULL
+##  $ axis.title                : NULL
+##  $ axis.title.x              :List of 11
+##   ..$ family       : NULL
+##   ..$ face         : NULL
+##   ..$ colour       : NULL
+##   ..$ size         : NULL
+##   ..$ hjust        : NULL
+##   ..$ vjust        : num 1
+##   ..$ angle        : NULL
+##   ..$ lineheight   : NULL
+##   ..$ margin       : &#39;margin&#39; num [1:4] 2.75points 0points 0points 0points
+##   .. ..- attr(*, &quot;unit&quot;)= int 8
+##   ..$ debug        : NULL
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
+##  $ axis.title.x.top          :List of 11
+##   ..$ family       : NULL
+##   ..$ face         : NULL
+##   ..$ colour       : NULL
+##   ..$ size         : NULL
+##   ..$ hjust        : NULL
+##   ..$ vjust        : num 0
+##   ..$ angle        : NULL
+##   ..$ lineheight   : NULL
+##   ..$ margin       : &#39;margin&#39; num [1:4] 0points 0points 2.75points 0points
+##   .. ..- attr(*, &quot;unit&quot;)= int 8
+##   ..$ debug        : NULL
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
+##  $ axis.title.x.bottom       : NULL
+##  $ axis.title.y              :List of 11
+##   ..$ family       : NULL
+##   ..$ face         : NULL
+##   ..$ colour       : NULL
+##   ..$ size         : NULL
+##   ..$ hjust        : NULL
+##   ..$ vjust        : num 1
+##   ..$ angle        : num 90
+##   ..$ lineheight   : NULL
+##   ..$ margin       : &#39;margin&#39; num [1:4] 0points 2.75points 0points 0points
+##   .. ..- attr(*, &quot;unit&quot;)= int 8
+##   ..$ debug        : NULL
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
+##  $ axis.title.y.left         : NULL
+##  $ axis.title.y.right        :List of 11
+##   ..$ family       : NULL
+##   ..$ face         : NULL
+##   ..$ colour       : NULL
+##   ..$ size         : NULL
+##   ..$ hjust        : NULL
+##   ..$ vjust        : num 0
+##   ..$ angle        : num -90
+##   ..$ lineheight   : NULL
+##   ..$ margin       : &#39;margin&#39; num [1:4] 0points 0points 0points 2.75points
+##   .. ..- attr(*, &quot;unit&quot;)= int 8
+##   ..$ debug        : NULL
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
+##  $ axis.text                 :List of 11
+##   ..$ family       : NULL
+##   ..$ face         : NULL
+##   ..$ colour       : chr &quot;grey30&quot;
+##   ..$ size         : &#39;rel&#39; num 0.8
+##   ..$ hjust        : NULL
+##   ..$ vjust        : NULL
+##   ..$ angle        : NULL
+##   ..$ lineheight   : NULL
+##   ..$ margin       : NULL
+##   ..$ debug        : NULL
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
+##  $ axis.text.x               :List of 11
+##   ..$ family       : NULL
+##   ..$ face         : NULL
+##   ..$ colour       : NULL
+##   ..$ size         : NULL
+##   ..$ hjust        : NULL
+##   ..$ vjust        : num 1
+##   ..$ angle        : NULL
+##   ..$ lineheight   : NULL
+##   ..$ margin       : &#39;margin&#39; num [1:4] 2.2points 0points 0points 0points
+##   .. ..- attr(*, &quot;unit&quot;)= int 8
+##   ..$ debug        : NULL
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
+##  $ axis.text.x.top           :List of 11
+##   ..$ family       : NULL
+##   ..$ face         : NULL
+##   ..$ colour       : NULL
+##   ..$ size         : NULL
+##   ..$ hjust        : NULL
+##   ..$ vjust        : num 0
+##   ..$ angle        : NULL
+##   ..$ lineheight   : NULL
+##   ..$ margin       : &#39;margin&#39; num [1:4] 0points 0points 2.2points 0points
+##   .. ..- attr(*, &quot;unit&quot;)= int 8
+##   ..$ debug        : NULL
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
+##  $ axis.text.x.bottom        : NULL
+##  $ axis.text.y               :List of 11
+##   ..$ family       : NULL
+##   ..$ face         : NULL
+##   ..$ colour       : NULL
+##   ..$ size         : NULL
+##   ..$ hjust        : num 1
+##   ..$ vjust        : NULL
+##   ..$ angle        : NULL
+##   ..$ lineheight   : NULL
+##   ..$ margin       : &#39;margin&#39; num [1:4] 0points 2.2points 0points 0points
+##   .. ..- attr(*, &quot;unit&quot;)= int 8
+##   ..$ debug        : NULL
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
+##  $ axis.text.y.left          : NULL
+##  $ axis.text.y.right         :List of 11
+##   ..$ family       : NULL
+##   ..$ face         : NULL
+##   ..$ colour       : NULL
+##   ..$ size         : NULL
+##   ..$ hjust        : num 0
+##   ..$ vjust        : NULL
+##   ..$ angle        : NULL
+##   ..$ lineheight   : NULL
+##   ..$ margin       : &#39;margin&#39; num [1:4] 0points 0points 0points 2.2points
+##   .. ..- attr(*, &quot;unit&quot;)= int 8
+##   ..$ debug        : NULL
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
+##  $ axis.ticks                :List of 6
+##   ..$ colour       : chr &quot;grey20&quot;
+##   ..$ size         : NULL
+##   ..$ linetype     : NULL
+##   ..$ lineend      : NULL
+##   ..$ arrow        : logi FALSE
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_line&quot; &quot;element&quot;
+##  $ axis.ticks.x              : NULL
+##  $ axis.ticks.x.top          : NULL
+##  $ axis.ticks.x.bottom       : NULL
+##  $ axis.ticks.y              : NULL
+##  $ axis.ticks.y.left         : NULL
+##  $ axis.ticks.y.right        : NULL
+##  $ axis.ticks.length         : &#39;simpleUnit&#39; num 2.75points
+##   ..- attr(*, &quot;unit&quot;)= int 8
+##  $ axis.ticks.length.x       : NULL
+##  $ axis.ticks.length.x.top   : NULL
+##  $ axis.ticks.length.x.bottom: NULL
+##  $ axis.ticks.length.y       : NULL
+##  $ axis.ticks.length.y.left  : NULL
+##  $ axis.ticks.length.y.right : NULL
+##  $ axis.line                 : list()
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_blank&quot; &quot;element&quot;
+##  $ axis.line.x               : NULL
+##  $ axis.line.x.top           : NULL
+##  $ axis.line.x.bottom        : NULL
+##  $ axis.line.y               : NULL
+##  $ axis.line.y.left          : NULL
+##  $ axis.line.y.right         : NULL
+##  $ legend.background         :List of 5
+##   ..$ fill         : NULL
+##   ..$ colour       : logi NA
+##   ..$ size         : NULL
+##   ..$ linetype     : NULL
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_rect&quot; &quot;element&quot;
+##  $ legend.margin             : &#39;margin&#39; num [1:4] 5.5points 5.5points 5.5points 5.5points
+##   ..- attr(*, &quot;unit&quot;)= int 8
+##  $ legend.spacing            : &#39;simpleUnit&#39; num 11points
+##   ..- attr(*, &quot;unit&quot;)= int 8
+##  $ legend.spacing.x          : NULL
+##  $ legend.spacing.y          : NULL
+##  $ legend.key                :List of 5
+##   ..$ fill         : chr &quot;white&quot;
+##   ..$ colour       : logi NA
+##   ..$ size         : NULL
+##   ..$ linetype     : NULL
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_rect&quot; &quot;element&quot;
+##  $ legend.key.size           : &#39;simpleUnit&#39; num 1.2lines
+##   ..- attr(*, &quot;unit&quot;)= int 3
+##  $ legend.key.height         : NULL
+##  $ legend.key.width          : NULL
+##  $ legend.text               :List of 11
+##   ..$ family       : NULL
+##   ..$ face         : NULL
+##   ..$ colour       : NULL
+##   ..$ size         : &#39;rel&#39; num 0.8
+##   ..$ hjust        : NULL
+##   ..$ vjust        : NULL
+##   ..$ angle        : NULL
+##   ..$ lineheight   : NULL
+##   ..$ margin       : NULL
+##   ..$ debug        : NULL
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
+##  $ legend.text.align         : NULL
+##  $ legend.title              :List of 11
+##   ..$ family       : NULL
+##   ..$ face         : NULL
+##   ..$ colour       : NULL
+##   ..$ size         : NULL
+##   ..$ hjust        : num 0
+##   ..$ vjust        : NULL
+##   ..$ angle        : NULL
+##   ..$ lineheight   : NULL
+##   ..$ margin       : NULL
+##   ..$ debug        : NULL
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
+##  $ legend.title.align        : NULL
+##  $ legend.position           : chr &quot;right&quot;
+##  $ legend.direction          : NULL
+##  $ legend.justification      : chr &quot;center&quot;
+##  $ legend.box                : NULL
+##  $ legend.box.just           : NULL
+##  $ legend.box.margin         : &#39;margin&#39; num [1:4] 0cm 0cm 0cm 0cm
+##   ..- attr(*, &quot;unit&quot;)= int 1
+##  $ legend.box.background     : list()
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_blank&quot; &quot;element&quot;
+##  $ legend.box.spacing        : &#39;simpleUnit&#39; num 11points
+##   ..- attr(*, &quot;unit&quot;)= int 8
+##  $ panel.background          :List of 5
+##   ..$ fill         : chr &quot;white&quot;
+##   ..$ colour       : logi NA
+##   ..$ size         : NULL
+##   ..$ linetype     : NULL
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_rect&quot; &quot;element&quot;
+##  $ panel.border              :List of 5
+##   ..$ fill         : logi NA
+##   ..$ colour       : chr &quot;grey20&quot;
+##   ..$ size         : NULL
+##   ..$ linetype     : NULL
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_rect&quot; &quot;element&quot;
+##  $ panel.spacing             : &#39;simpleUnit&#39; num 5.5points
+##   ..- attr(*, &quot;unit&quot;)= int 8
+##  $ panel.spacing.x           : NULL
+##  $ panel.spacing.y           : NULL
+##  $ panel.grid                :List of 6
+##   ..$ colour       : chr &quot;grey92&quot;
+##   ..$ size         : NULL
+##   ..$ linetype     : NULL
+##   ..$ lineend      : NULL
+##   ..$ arrow        : logi FALSE
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_line&quot; &quot;element&quot;
+##  $ panel.grid.major          : NULL
+##  $ panel.grid.minor          :List of 6
+##   ..$ colour       : NULL
+##   ..$ size         : &#39;rel&#39; num 0.5
+##   ..$ linetype     : NULL
+##   ..$ lineend      : NULL
+##   ..$ arrow        : logi FALSE
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_line&quot; &quot;element&quot;
+##  $ panel.grid.major.x        : NULL
+##  $ panel.grid.major.y        : NULL
+##  $ panel.grid.minor.x        : NULL
+##  $ panel.grid.minor.y        : NULL
+##  $ panel.ontop               : logi FALSE
+##  $ plot.background           :List of 5
+##   ..$ fill         : NULL
+##   ..$ colour       : chr &quot;white&quot;
+##   ..$ size         : NULL
+##   ..$ linetype     : NULL
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_rect&quot; &quot;element&quot;
+##  $ plot.title                :List of 11
+##   ..$ family       : NULL
+##   ..$ face         : NULL
+##   ..$ colour       : NULL
+##   ..$ size         : &#39;rel&#39; num 1.2
+##   ..$ hjust        : num 0
+##   ..$ vjust        : num 1
+##   ..$ angle        : NULL
+##   ..$ lineheight   : NULL
+##   ..$ margin       : &#39;margin&#39; num [1:4] 0points 0points 5.5points 0points
+##   .. ..- attr(*, &quot;unit&quot;)= int 8
+##   ..$ debug        : NULL
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
+##  $ plot.title.position       : chr &quot;panel&quot;
+##  $ plot.subtitle             :List of 11
+##   ..$ family       : NULL
+##   ..$ face         : NULL
+##   ..$ colour       : NULL
+##   ..$ size         : NULL
+##   ..$ hjust        : num 0
+##   ..$ vjust        : num 1
+##   ..$ angle        : NULL
+##   ..$ lineheight   : NULL
+##   ..$ margin       : &#39;margin&#39; num [1:4] 0points 0points 5.5points 0points
+##   .. ..- attr(*, &quot;unit&quot;)= int 8
+##   ..$ debug        : NULL
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
+##  $ plot.caption              :List of 11
+##   ..$ family       : NULL
+##   ..$ face         : NULL
+##   ..$ colour       : NULL
+##   ..$ size         : &#39;rel&#39; num 0.8
+##   ..$ hjust        : num 1
+##   ..$ vjust        : num 1
+##   ..$ angle        : NULL
+##   ..$ lineheight   : NULL
+##   ..$ margin       : &#39;margin&#39; num [1:4] 5.5points 0points 0points 0points
+##   .. ..- attr(*, &quot;unit&quot;)= int 8
+##   ..$ debug        : NULL
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
+##  $ plot.caption.position     : chr &quot;panel&quot;
+##  $ plot.tag                  :List of 11
+##   ..$ family       : NULL
+##   ..$ face         : NULL
+##   ..$ colour       : NULL
+##   ..$ size         : &#39;rel&#39; num 1.2
+##   ..$ hjust        : num 0.5
+##   ..$ vjust        : num 0.5
+##   ..$ angle        : NULL
+##   ..$ lineheight   : NULL
+##   ..$ margin       : NULL
+##   ..$ debug        : NULL
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
+##  $ plot.tag.position         : chr &quot;topleft&quot;
+##  $ plot.margin               : &#39;margin&#39; num [1:4] 5.5points 5.5points 5.5points 5.5points
+##   ..- attr(*, &quot;unit&quot;)= int 8
+##  $ strip.background          :List of 5
+##   ..$ fill         : chr &quot;grey85&quot;
+##   ..$ colour       : chr &quot;grey20&quot;
+##   ..$ size         : NULL
+##   ..$ linetype     : NULL
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_rect&quot; &quot;element&quot;
+##  $ strip.background.x        : NULL
+##  $ strip.background.y        : NULL
+##  $ strip.placement           : chr &quot;inside&quot;
+##  $ strip.text                :List of 11
+##   ..$ family       : NULL
+##   ..$ face         : NULL
+##   ..$ colour       : chr &quot;grey10&quot;
+##   ..$ size         : &#39;rel&#39; num 0.8
+##   ..$ hjust        : NULL
+##   ..$ vjust        : NULL
+##   ..$ angle        : NULL
+##   ..$ lineheight   : NULL
+##   ..$ margin       : &#39;margin&#39; num [1:4] 4.4points 4.4points 4.4points 4.4points
+##   .. ..- attr(*, &quot;unit&quot;)= int 8
+##   ..$ debug        : NULL
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
+##  $ strip.text.x              : NULL
+##  $ strip.text.y              :List of 11
+##   ..$ family       : NULL
+##   ..$ face         : NULL
+##   ..$ colour       : NULL
+##   ..$ size         : NULL
+##   ..$ hjust        : NULL
+##   ..$ vjust        : NULL
+##   ..$ angle        : num -90
+##   ..$ lineheight   : NULL
+##   ..$ margin       : NULL
+##   ..$ debug        : NULL
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
+##  $ strip.switch.pad.grid     : &#39;simpleUnit&#39; num 2.75points
+##   ..- attr(*, &quot;unit&quot;)= int 8
+##  $ strip.switch.pad.wrap     : &#39;simpleUnit&#39; num 2.75points
+##   ..- attr(*, &quot;unit&quot;)= int 8
+##  $ strip.text.y.left         :List of 11
+##   ..$ family       : NULL
+##   ..$ face         : NULL
+##   ..$ colour       : NULL
+##   ..$ size         : NULL
+##   ..$ hjust        : NULL
+##   ..$ vjust        : NULL
+##   ..$ angle        : num 90
+##   ..$ lineheight   : NULL
+##   ..$ margin       : NULL
+##   ..$ debug        : NULL
+##   ..$ inherit.blank: logi TRUE
+##   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
+##  - attr(*, &quot;class&quot;)= chr [1:2] &quot;theme&quot; &quot;gg&quot;
+##  - attr(*, &quot;complete&quot;)= logi TRUE
+##  - attr(*, &quot;validate&quot;)= logi TRUE</code></pre>
+</div>
+<div id="discussion-of-histogram-2-and-related-findings" class="section level1">
+<h1>Discussion of Histogram 2 and Related Findings:</h1>
+<p>Histogram 2 shows us the distribution of the ages of the respondents who gave a high rating to the Federal Green Party (a high rating is a rating above 55 and is indicative of a favourable opinion of the party). The y-axis in the histogram above tells us, for every age group, how many respondents gave a high rating to the party.</p>
+<p>The distribution is a unimodal distribution because it has one clearly defined mode, which is about 39 years of age, as indicated by the one main “hump” in the distribution. A unimodal distribution is a distribution that has one main “hump” and the mode of a set of values is the value that occurs most frequently in the set of values.
+The distribution’s right tail is slightly longer than its left tail, indicating that the distribution is slightly positively skewed (but certainly not very positively skewed). The tails of a distribution are the parts that typically trail off on either side of the distribution. If a distribution’s right tail is longer than its left tail, it is said to be positively skewed. The slight positive skew is indicating that respondents between about 18 and 44 years of age were slightly more likely to be among the respondents who gave a high rating to the Federal Green Party.
+One can see why the distribution would be slightly positively skewed. The Federal Green Party of Canada is working to build a more prosperous and sustainable future for all Canadians. Not surprisingly, Canadian respondents between 18 and 44 years of age would perhaps be more likely to have an interest in mitigating global warming and preventing climate change because they are going to live for more years in the future than people over the age of 50 years. People older than 50 years of age are not likely to be as interested in mitigating global warming and preventing climate change. Respondents between 18 and 44 years of age are likely to think of the issue of building a more sustainable future for all Canadians as being an important issue and hence, are more likely to have a more favourable view of the Federal Green party.
+Not surprisingly, the mean age of the respondents who gave a high rating to the Federal Green Party is about 48 years, which is 4 years lesser than the mean age of the respondents who gave a low rating to the party. In addition, the median age of the respondents who gave a high rating to the Federal Green Party is 47 years, which is 6 years lesser than the median age of the respondents who gave a low rating to the Federal Green Party.
+Not surprisingly, the mean age of the respondents who gave a high rating to the Federal Green Party is about 48 years, which is 4 years lesser than the mean age of the respondents who gave a low rating to the party. In addition, the median age of the respondents who gave a high rating to the Federal Green Party is 47 years, which is 6 years lesser than the median age of the respondents who gave a low rating to the Federal Green Party.</p>
+</div>
+<div id="further-analaysis-and-discussion-on-the-findings" class="section level1">
+<h1>Further Analaysis and Discussion On the Findings:</h1>
+<p>Since the median age among respondents who did not have a favourable opinion of the Federal Green Party (that is, gave a rating below 55) was 53 years and the median age among respondents who gave a favourable opinion of the Federal Green Party (that is, gave a rating above 55) was 47 years, we can see that respondents over the age of 50 were slightly more likely to give a low rating to the Federal Green Party. Furthermore, the distribution in histogram 1 is bell-shaped, while the distribution in histogram 2 is sligthly positively skewed. This provides evidence that respondents below 50 years of age were more likely to have a favourable opinion of the Federal Green Party than respondents above 50 years of age.
+The results of my analysis can not be considered true without hypothesis testing or other statistical methods, but they do convey that it is possible that Canadians over the age of 50 are less likely to have a favourable opinion of the Federal Green party and vote for it in the next federal election in Canada.</p>
+</div>
+<div id="shortcomings-in-my-analysis-and-next-steps" class="section level1">
+<h1>Shortcomings In My Analysis and Next Steps:</h1>
+<p>1,351 respondents who took part in the survey (the survey with the survey code: “ces2019_phone”) gave the Federal Green Party a high rating whereas 2,621 respondents who took part in that survey (the survey with the survey code: “ces2019_phone”) gave the Federal Green Party a low rating. Histogram 2 was therefore based on data collected from a smaller sample, which may explain why the distribution it showed was slightly positively skewed. Hence, comparing the distributions in histograms 1 and 2 and their summary statistics could lead to misleading conclusions about Canadian voters’ opinions of the Federal Green Party.
+I did not try to estimate or test any hypotheses regarding the mean age of Canadians who are likely to give a low rating to the Federal Green Party or the proportion of Canadian voters over the age of 50 who are likely to give a low rating to the Federal Green Party. All the conclusions of my analysis are applicable to the respondents of this survey only and not to all Canadian voters. Besides, the sample from which the data was taken may not have been representative of all Canadian voters for a variety of reasons. My analyses are only meant to identify certain possibilities but not confirm their existence. Further research on this interesting topic should try to estimate the mean age of Canadian voters who have a favourable opinion of the Federal Green Party so that the Federal Green Party can broadly figure out which age groups are less likely to have a favourable opinion of it.</p>
+</div>
+<div id="citations-and-references" class="section level1">
+<h1>Citations and References:</h1>
+<ul>
+<li><p>The code and the other text in the R Markdown File were written in R Studio Cloud.</p></li>
+<li><p>Citation for the survey file used in this analysis:</p></li>
+<li><p>Stephenson, Laura B; Harell, Allison; Rubenson, Daniel; Loewen, Peter John, 2020, ‘2019 Canadian Election Study - Phone Survey’, <a href="https://doi.org/10.7910/DVN/8RHLG1" class="uri">https://doi.org/10.7910/DVN/8RHLG1</a>, Harvard Dataverse, V1, UNF:6:eyR28qaoYlHj9qwPWZmmVQ== [fileUNF]</p></li>
+<li><p>Stephenson, Laura, Allison Harrel, Daniel Rubenson and Peter Loewen. Forthcoming. ‘Measuring Preferences and Behaviour in the 2019 Canadian Election Study,’ Canadian Journal of Political Science.</p></li>
+</ul>
+<p>LINK: <a href="https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/8RHLG1" class="uri">https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/8RHLG1</a></p>
+<ul>
+<li>Citation for R:</li>
+</ul>
+<p>R Core Team (2015). R: A language and environment for
+## statistical computing. R Foundation for Statistical Computing,
+## Vienna, Austria. URL <a href="https://www.R-project.org/" class="uri">https://www.R-project.org/</a>.</p>
+<p><span class="citation">@Manual</span>{,
+title = {R: A Language and Environment for Statistical
+Computing},
+author = {{R Core Team}},
+organization = {R Foundation for Statistical Computing},
+address = {Vienna, Austria},
+year = 2020,
+url = {<a href="https://www.R-project.org" class="uri">https://www.R-project.org</a>}
+}</p>
+<ul>
+<li>Citation for R 4.0.2:</li>
+</ul>
+<div id="r-core-team-2020.-r-a-language-and-environment-for-statistical" class="section level2">
+<h2>R Core Team (2020). R: A language and environment for statistical</h2>
+</div>
+<div id="computing.-r-foundation-for-statistical-computing-vienna-austria." class="section level2">
+<h2>computing. R Foundation for Statistical Computing, Vienna, Austria.</h2>
+</div>
+<div id="url-httpswww.r-project.org." class="section level2">
+<h2>URL <a href="https://www.R-project.org/" class="uri">https://www.R-project.org/</a>.</h2>
+</div>
+<div id="section" class="section level2">
+<h2></h2>
+</div>
+<div id="a-bibtex-entry-for-latex-users-is" class="section level2">
+<h2>A BibTeX entry for LaTeX users is</h2>
+</div>
+<div id="section-1" class="section level2">
+<h2></h2>
+</div>
+<div id="manual" class="section level2">
+<h2><span class="citation">@Manual</span>{,</h2>
+</div>
+<div id="title-r-a-language-and-environment-for-statistical-computing" class="section level2">
+<h2>title = {R: A Language and Environment for Statistical Computing},</h2>
+</div>
+<div id="author-r-core-team" class="section level2">
+<h2>author = {{R Core Team}},</h2>
+</div>
+<div id="organization-r-foundation-for-statistical-computing" class="section level2">
+<h2>organization = {R Foundation for Statistical Computing},</h2>
+</div>
+<div id="address-vienna-austria" class="section level2">
+<h2>address = {Vienna, Austria},</h2>
+</div>
+<div id="year-2020" class="section level2">
+<h2>year = {2020},</h2>
+</div>
+<div id="url-httpswww.r-project.org" class="section level2">
+<h2>url = {<a href="https://www.R-project.org/" class="uri">https://www.R-project.org/</a>},</h2>
+</div>
+<div id="section-2" class="section level2">
+<h2>}</h2>
+</div>
+</div>
+<div id="section-3" class="section level1">
+<h1></h1>
+<ul>
+<li>Citation for the ‘rmarkdown’ package:</li>
+</ul>
+<p>Allaire J, Xie Y, McPherson J, Luraschi J, Ushey K, Atkins A, Wickham H, Cheng J, Chang W, Iannone R (2020). rmarkdown: Dynamic Documents for R. R package version 2.3, <a href="https://github.com/rstudio/rmarkdown" class="uri">https://github.com/rstudio/rmarkdown</a>.</p>
+<p>Xie Y, Allaire J, Grolemund G (2018). R Markdown: The Definitive Guide. Chapman and Hall/CRC, Boca Raton, Florida. ISBN 9781138359338, <a href="https://bookdown.org/yihui/rmarkdown" class="uri">https://bookdown.org/yihui/rmarkdown</a>.</p>
+<p>Corresponding BibTeX entries:</p>
+<p><span class="citation">@Manual</span>{,
+title = {rmarkdown: Dynamic Documents for R},
+author = {JJ Allaire and Yihui Xie and Jonathan McPherson and
+Javier Luraschi and Kevin Ushey and Aron Atkins and Hadley
+Wickham and Joe Cheng and Winston Chang and Richard Iannone},
+year = {2020},
+note = {R package version 2.3},
+url = {<a href="https://github.com/rstudio/rmarkdown" class="uri">https://github.com/rstudio/rmarkdown</a>},
+}
+<span class="citation">@Book</span>{,
+title = {R Markdown: The Definitive Guide},
+author = {Yihui Xie and J.J. Allaire and Garrett Grolemund},
+publisher = {Chapman and Hall/CRC},
+address = {Boca Raton, Florida},
+year = {2018},
+note = {ISBN 9781138359338},
+url = {<a href="https://bookdown.org/yihui/rmarkdown" class="uri">https://bookdown.org/yihui/rmarkdown</a>},
+}</p>
+<ul>
+<li>Citation for the dataset on which histograms 1 and 2 are based:</li>
+</ul>
+<p>Stephenson, Laura B; Harell, Allison; Rubenson, Daniel; Loewen, Peter John, 2020, “2019 Canadian Election Study - Phone Survey”, <a href="https://doi.org/10.7910/DVN/8RHLG1" class="uri">https://doi.org/10.7910/DVN/8RHLG1</a>, Harvard Dataverse, V1, UNF:6:eyR28qaoYlHj9qwPWZmmVQ== fileUNF</p>
+<ul>
+<li><p>Paul A. Hodgetts and Rohan Alexander (2020). cesR: Access the CES Datasets a Little Easier.. R package
+version 0.1.0.</p>
+<p><span class="citation">@Manual</span>{,
+title = {cesR: Access the CES Datasets a Little Easier.},
+author = {Paul A. Hodgetts and Rohan Alexander},
+year = {2020},
+note = {R package version 0.1.0},
+}</p>
+<p>Hadley Wickham, Jim Hester and Winston Chang (2020). devtools: Tools to Make Developing R Packages Easier.
+<a href="https://devtools.r-lib.org/" class="uri">https://devtools.r-lib.org/</a>, <a href="https://github.com/r-lib/devtools" class="uri">https://github.com/r-lib/devtools</a>.</p>
+<p><span class="citation">@Manual</span>{,
+title = {devtools: Tools to Make Developing R Packages Easier},
+author = {Hadley Wickham and Jim Hester and Winston Chang},
+year = {2020},
+note = {<a href="https://devtools.r-lib.org/" class="uri">https://devtools.r-lib.org/</a>, <a href="https://github.com/r-lib/devtools" class="uri">https://github.com/r-lib/devtools</a>},
+}</p>
+<p>R Core Team (2020). R: A language and environment for statistical computing. R Foundation for Statistical
+Computing, Vienna, Austria. URL <a href="https://www.R-project.org/" class="uri">https://www.R-project.org/</a>.</p>
+<p><span class="citation">@Manual</span>{,
+title = {R: A Language and Environment for Statistical Computing},
+author = {{R Core Team}},
+organization = {R Foundation for Statistical Computing},
+address = {Vienna, Austria},
+year = {2020},
+url = {<a href="https://www.R-project.org/" class="uri">https://www.R-project.org/</a>},
+}</p>
+<p>JJ Allaire, Jeffrey Horner, Yihui Xie, Vicent Marti and Natacha Porte (2019). markdown: Render Markdown
+with the C Library ‘Sundown’. R package version 1.1. <a href="https://github.com/rstudio/markdown" class="uri">https://github.com/rstudio/markdown</a></p>
+<p><span class="citation">@Manual</span>{,
+title = {markdown: Render Markdown with the C Library ‘Sundown’},
+author = {JJ Allaire and Jeffrey Horner and Yihui Xie and Vicent Marti and Natacha Porte},
+year = {2019},
+note = {R package version 1.1},
+url = {<a href="https://github.com/rstudio/markdown" class="uri">https://github.com/rstudio/markdown</a>},
+}</p></li>
+</ul>
+<p>-Citation for the package “devtools”:</p>
+<p>Hadley Wickham, Jim Hester and Winston Chang (2020). devtools: Tools to Make Developing R Packages Easier. <a href="https://devtools.r-lib.org/" class="uri">https://devtools.r-lib.org/</a>,
+<a href="https://github.com/r-lib/devtools" class="uri">https://github.com/r-lib/devtools</a>.</p>
+<p>A BibTeX entry for LaTeX users is</p>
+<p><span class="citation">@Manual</span>{,
+title = {devtools: Tools to Make Developing R Packages Easier},
+author = {Hadley Wickham and Jim Hester and Winston Chang},
+year = {2020},
+note = {<a href="https://devtools.r-lib.org/" class="uri">https://devtools.r-lib.org/</a>, <a href="https://github.com/r-lib/devtools" class="uri">https://github.com/r-lib/devtools</a>},
+}</p>
+<p>-Citation for the package “knitr”:</p>
+<p>Yihui Xie (2020). knitr: A General-Purpose Package for Dynamic Report Generation in R. R package version 1.30.</p>
+<p>Yihui Xie (2015) Dynamic Documents with R and knitr. 2nd edition. Chapman and Hall/CRC. ISBN 978-1498716963</p>
+<p>Yihui Xie (2014) knitr: A Comprehensive Tool for Reproducible Research in R. In Victoria Stodden, Friedrich Leisch and Roger D. Peng, editors,
+Implementing Reproducible Computational Research. Chapman and Hall/CRC. ISBN 978-1466561595</p>
+<p>-Citation for the package ‘blogdown’:</p>
+<p>Yihui Xie (2020). blogdown: Create Blogs and Websites
+with R Markdown. R package version 0.20.</p>
+<p>Yihui Xie, Alison Presmanes Hill, and Amber Thomas
+(2017). blogdown: Creating Websites with R Markdown.
+Chapman and Hall/CRC. ISBN 978-0815363729</p>
+<p>To see these entries in BibTeX format, use
+‘print(<citation>, bibtex=TRUE)’, ‘toBibtex(.)’, or set
+‘options(citation.bibtex.max=999)’.</p>
+<p>-Citation for the package ‘tidyverse’:</p>
+<p>Wickham et al., (2019). Welcome to the tidyverse. Journal of Open Source
+Software, 4(43), 1686, <a href="https://doi.org/10.21105/joss.01686" class="uri">https://doi.org/10.21105/joss.01686</a></p>
+<p>A BibTeX entry for LaTeX users is</p>
+<p><span class="citation">@Article</span>{,
+title = {Welcome to the {tidyverse}},
+author = {Hadley Wickham and Mara Averick and Jennifer Bryan and Winston Chang and Lucy D’Agostino McGowan and Romain François and Garrett Grolemund and Alex Hayes and Lionel Henry and Jim Hester and Max Kuhn and Thomas Lin Pedersen and Evan Miller and Stephan Milton Bache and Kirill Müller and Jeroen Ooms and David Robinson and Dana Paige Seidel and Vitalie Spinu and Kohske Takahashi and Davis Vaughan and Claus Wilke and Kara Woo and Hiroaki Yutani},
+year = {2019},
+journal = {Journal of Open Source Software},
+volume = {4},
+number = {43},
+pages = {1686},
+doi = {10.21105/joss.01686},
+}</p>
+<ul>
+<li><p>Citation for the package ‘skimr’:</p>
+<p>Elin Waring, Michael Quinn, Amelia McNamara, Eduardo Arino de la Rubia, Hao
+Zhu and Shannon Ellis (2020). skimr: Compact and Flexible Summaries of Data.
+<a href="https://docs.ropensci.org/skimr" class="uri">https://docs.ropensci.org/skimr</a> (website), <a href="https://github.com/ropensci/skimr" class="uri">https://github.com/ropensci/skimr</a>.</p></li>
+</ul>
+<p>A BibTeX entry for LaTeX users is</p>
+<p><span class="citation">@Manual</span>{,
+title = {skimr: Compact and Flexible Summaries of Data},
+author = {Elin Waring and Michael Quinn and Amelia McNamara and Eduardo {Arino de la Rubia} and Hao Zhu and Shannon Ellis},
+year = {2020},
+note = {<a href="https://docs.ropensci.org/skimr" class="uri">https://docs.ropensci.org/skimr</a> (website),
+<a href="https://github.com/ropensci/skimr" class="uri">https://github.com/ropensci/skimr</a>},
+}</p>
+<p>-Citation for the package ‘visdat’:</p>
+<p>Tierney N (2017). “visdat: Visualising Whole Data Frames.” <em>JOSS</em>, <em>2</em>(16), 355.
+doi: 10.21105/joss.00355 (URL: <a href="https://doi.org/10.21105/joss.00355" class="uri">https://doi.org/10.21105/joss.00355</a>), &lt;URL:
+<a href="http://dx.doi.org/10.21105/joss.00355" class="uri">http://dx.doi.org/10.21105/joss.00355</a>&gt;.</p>
+<p>A BibTeX entry for LaTeX users is</p>
+<p><span class="citation">@Article</span>{,
+title = {visdat: Visualising Whole Data Frames},
+author = {Nicholas Tierney},
+doi = {10.21105/joss.00355},
+url = {<a href="http://dx.doi.org/10.21105/joss.00355" class="uri">http://dx.doi.org/10.21105/joss.00355</a>},
+year = {2017},
+publisher = {Journal of Open Source Software},
+volume = {2},
+number = {16},
+pages = {355},
+journal = {JOSS},
+}</p>
+<p>-Citation for the package ‘cesR’:</p>
+<p>To cite package ‘cesR’ in publications use:</p>
+<p>Paul A. Hodgetts and Rohan Alexander (2020). cesR: Access the CES Datasets a
+Little Easier.. R package version 0.1.0.</p>
+<p>A BibTeX entry for LaTeX users is</p>
+<p><span class="citation">@Manual</span>{,
+title = {cesR: Access the CES Datasets a Little Easier.},
+author = {Paul A. Hodgetts and Rohan Alexander},
+year = {2020},
+note = {R package version 0.1.0},
+}</p>
+<p>-Citation for the literature and other websited used (other websites used include Github and Netlify. Both helped me make my blogpost and upload it:</p>
+<p>Sharpe, Norean R., De Veaux, Richard D., Velleman, Paul F., David Wright. Business Statistics. Pearson Canada Inc.: 2018.</p>
+<p>Green Party of Canada. Accessed September 27, 2020. <a href="https://www.greenparty.ca/en" class="uri">https://www.greenparty.ca/en</a>.</p>
+<p>Canadian Election Study. Accessed September 27, 2020. <a href="http://www.ces-eec.ca" class="uri">http://www.ces-eec.ca</a>.</p>
+<p>cesR, Access the Canadian Election Study Datasets a bit easier. <a href="https://hodgettsp.github.io/cesR/" class="uri">https://hodgettsp.github.io/cesR/</a>.</p>
+<p>Github. Accessed September 27, 2020. <a href="https://github.com" class="uri">https://github.com</a>.</p>
+<p>netlify. Accessed September 27, 2020. <a href="https://www.netlify.com" class="uri">https://www.netlify.com</a>.</p>
+</div>
